@@ -1,0 +1,35 @@
+FROM python:3.8-slim-buster
+
+LABEL maintainer "Mark - Auto generated"
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install standard tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    apt-utils build-essential git curl wget \
+    pkg-config libopenblas-dev 
+
+# Update pip
+RUN pip --no-cache-dir install --upgrade pip setuptools
+
+# Install pytorch
+RUN pip install torch==1.7.1+cpu torchvision==0.8.2+cpu -f https://download.pytorch.org/whl/torch_stable.html
+
+# Install Deep Graph Library (DGL)
+RUN pip install dgl==0.5.1
+ENV DGLBACKEND=pytorch
+
+# Install pytorch-lightning
+RUN pip install pytorch-lightning==0.9.0
+
+# Install misc
+RUN pip install scikit-learn==0.24.1 gensim==3.8.3 pyyaml==5.4.1 matplotlib==3.3.4 networkx==2.5
+
+RUN rm -rf /var/lib/apt/lists/*
+
+# Create project directory
+RUN mkdir -p /home/project
+WORKDIR /home/project
+
+# Set entrypoint
+CMD ["/bin/bash"] 
